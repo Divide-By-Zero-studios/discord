@@ -63,6 +63,14 @@ This writes the GitHub Pages artifact to `dist/`.
 
 ## Start on Windows Login
 
+The easiest setup path is:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\setup-hermes-endpoint.ps1
+```
+
+That script checks for Node.js/npm/npx, installs Node.js LTS with `winget` if missing, installs `localtunnel` globally if `lt` is not available, runs `npm ci`, creates `.env` from `.env.example` when needed, and registers the startup task.
+
 The local Discord interaction server and HTTPS tunnel can be started at Windows login with:
 
 ```powershell

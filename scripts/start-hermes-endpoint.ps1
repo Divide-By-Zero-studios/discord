@@ -19,7 +19,7 @@ function Stop-ExistingLocalTunnel {
       $_.CommandLine -match $subdomain
     } |
     ForEach-Object {
-      & taskkill.exe /PID $_.ProcessId /T /F 2>$null | Out-Null
+      & cmd.exe /c "taskkill.exe /PID $($_.ProcessId) /T /F >NUL 2>NUL"
     }
 }
 
@@ -39,10 +39,25 @@ if (-not (Test-PortListening -Port 3000)) {
 
 Stop-ExistingLocalTunnel
 
-Start-Process `
-  -FilePath 'npx.cmd' `
-  -ArgumentList '--yes', 'localtunnel', '--port', '3000', '--local-host', '127.0.0.1', '--subdomain', $subdomain `
-  -WorkingDirectory $repoRoot `
-  -WindowStyle Hidden `
-  -RedirectStandardOutput (Join-Path $logDir 'hermes-tunnel.out.log') `
-  -RedirectStandardError (Join-Path $logDir 'hermes-tunnel.err.log')
+$localTunnel = Get-Command 'lt.cmd' -ErrorAction SilentlyContinue
+if (-not $localTunnel) {
+  $localTunnel = Get-Command 'lt' -ErrorAction SilentlyContinue
+}
+
+if ($localTunnel) {
+  Start-Process `
+    -FilePath $localTunnel.Source `
+    -ArgumentList '--port', '3000', '--local-host', '127.0.0.1', '--subdomain', $subdomain `
+    -WorkingDirectory $repoRoot `
+    -WindowStyle Hidden `
+    -RedirectStandardOutput (Join-Path $logDir 'hermes-tunnel.out.log') `
+    -RedirectStandardError (Join-Path $logDir 'hermes-tunnel.err.log')
+} else {
+  Start-Process `
+    -FilePath 'npx.cmd' `
+    -ArgumentList '--yes', 'localtunnel', '--port', '3000', '--local-host', '127.0.0.1', '--subdomain', $subdomain `
+    -WorkingDirectory $repoRoot `
+    -WindowStyle Hidden `
+    -RedirectStandardOutput (Join-Path $logDir 'hermes-tunnel.out.log') `
+    -RedirectStandardError (Join-Path $logDir 'hermes-tunnel.err.log')
+}
