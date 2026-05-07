@@ -61,6 +61,20 @@ npm run build:static
 
 This writes the GitHub Pages artifact to `dist/`.
 
+## Start on Windows Login
+
+The local Discord interaction server and HTTPS tunnel can be started at Windows login with:
+
+```powershell
+$scriptPath = Join-Path (Get-Location).Path 'scripts\start-hermes-endpoint.ps1'
+$action = New-ScheduledTaskAction -Execute 'pwsh.exe' -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`""
+$trigger = New-ScheduledTaskTrigger -AtLogOn
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 1)
+Register-ScheduledTask -TaskName 'HermesBotEndpoint' -Action $action -Trigger $trigger -Settings $settings -Description 'Starts Hermes Bot local Discord endpoint and HTTPS tunnel at logon.' -Force
+```
+
+The startup script uses the fixed localtunnel subdomain `https://hermes-discord-divide-by-zero.loca.lt`. Keep in mind this is still a local machine tunnel: it only works while this Windows user session, the Node server, and the tunnel are running.
+
 ## Discord Setup
 
 Set these values in `.env` before deploying:

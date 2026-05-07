@@ -1,4 +1,6 @@
 .env
 dist/
+logs/
+localtunnel.*.log
 node_modules/
 npm-debug.log*
