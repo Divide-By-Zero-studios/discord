@@ -1,0 +1,22 @@
+{
+  "name": "hermes-bot-policy-endpoints",
+  "version": "1.0.0",
+  "description": "Hermes Bot policy pages and Discord endpoint helpers.",
+  "type": "module",
+  "scripts": {
+    "build:static": "node src/buildStatic.js",
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}
